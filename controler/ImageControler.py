@@ -2,7 +2,7 @@ import os
 import pygame
 
 
-class ImageControler(pygame.image):
+class ImageControler:
     def __init__(self, image_folder_name):
         self.path = os.path.join(os.getcwd(), image_folder_name)
         self.images = {}
@@ -10,11 +10,12 @@ class ImageControler(pygame.image):
 
     def _create_image_dic(self):
         names = sorted(os.listdir(self.path))
-        self.images['BACKGROUND'] = self.load(os.path.join(self.path, 'background.jpg')).convert()
-        names.remove('background.jpg')
+        self.images['BACKGROUND'] = pygame.image.load(os.path.join(self.path, 'background.png')).convert()
+        names.remove('background.png')
         for name in names:
             image_name = name[:-4].upper()
-            self.images[image_name] = self.load(os.path.join(self.path, name)).convert_alpha(self.images['BACKGROUND'])
+            self.images[image_name] = pygame.image.load(os.path.join(self.path, name)).convert_alpha(
+                self.images['BACKGROUND'])
 
     def get_image(self, image_name):
         try:
