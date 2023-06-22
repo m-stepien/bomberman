@@ -17,3 +17,4 @@ class Player(pygame.sprite.Sprite):
         # TODO decyzja w jaki sposób rozwiązywać kontrolę użytych bomb czy klasa powinna sama o to
         # TODO dbac czy odpowiedzilany powinien byc za to menagerbomb
         return self.position
+
