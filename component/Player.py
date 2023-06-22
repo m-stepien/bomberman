@@ -36,6 +36,8 @@ class Player(pygame.sprite.Sprite):
         elif keys_pressed[self.control.UP]:
             self.rect.move_ip([0, -self.speed])
             self.image = self.animation_handler.run(1)
+        if keys_pressed[self.control.SET_BOMB]:
+            print("KABOOM?")
     def draw(self, surface):
         surface.blit(self.image, self.rect)
 

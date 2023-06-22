@@ -23,7 +23,7 @@ class ImageControler:
         except Exception:
             print(Exception)
             # TODO dorób obsługę wyjątków
-            return -1
+            exit(-1)
         if size:
             # tu wyjątek jesli nie jest tupla
             image_to_return = pygame.transform.scale(image_to_return, size)
