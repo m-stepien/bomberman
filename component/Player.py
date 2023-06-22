@@ -38,8 +38,13 @@ class Player(pygame.sprite.Sprite):
             self.image = self.animation_handler.run(1)
         if keys_pressed[self.control.SET_BOMB]:
             print("KABOOM?")
+
     def draw(self, surface):
         surface.blit(self.image, self.rect)
+
+
+    def colide(self, block_group):
+        if pygame.sprite.spritecollide(self, block_group, False):
 
     def plant_bom(self):
         # TODO decyzja w jaki sposób rozwiązywać kontrolę użytych bomb czy klasa powinna sama o to
