@@ -18,33 +18,38 @@ class Player(pygame.sprite.Sprite):
         self.control = control
         super().__init__()
 
-    def update(self, keys_pressed):
-        self._handle_events(keys_pressed)
+    def update(self, keys_pressed, block_group):
+        self._handle_events(keys_pressed, block_group)
         pass
 
-    def _handle_events(self, keys_pressed):
+    def _handle_events(self, keys_pressed, block_group):
+        movement = None
         if keys_pressed[self.control.LEFT]:
-            self.rect.move_ip([-self.speed, 0])
+            movement = [-self.speed, 0]
             self.image = self.animation_handler.run(2)
         elif keys_pressed[self.control.RIGHT]:
-            self.rect.move_ip([self.speed, 0])
+            movement = [self.speed, 0]
             self.image = self.animation_handler.run(3)
 
         elif keys_pressed[self.control.DOWN]:
-            self.rect.move_ip([0, self.speed])
+            movement = [0, self.speed]
             self.image = self.animation_handler.run(0)
         elif keys_pressed[self.control.UP]:
-            self.rect.move_ip([0, -self.speed])
+            movement = [0, -self.speed]
             self.image = self.animation_handler.run(1)
         if keys_pressed[self.control.SET_BOMB]:
             print("KABOOM?")
+        if movement:
+            self.rect.move_ip(movement)
+            self.colide(block_group, movement)
 
     def draw(self, surface):
         surface.blit(self.image, self.rect)
 
 
-    def colide(self, block_group):
+    def colide(self, block_group, movement):
         if pygame.sprite.spritecollide(self, block_group, False):
+            self.rect.move_ip([-movement[0], -movement[1]])
 
     def plant_bom(self):
         # TODO decyzja w jaki sposób rozwiązywać kontrolę użytych bomb czy klasa powinna sama o to
