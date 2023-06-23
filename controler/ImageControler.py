@@ -21,11 +21,8 @@ class ImageControler:
         try:
             image_to_return = self.images[image_name.upper()]
         except Exception:
-            print(Exception)
-            # TODO dorób obsługę wyjątków
             exit(-1)
         if size:
-            # tu wyjątek jesli nie jest tupla
             image_to_return = pygame.transform.scale(image_to_return, size)
         return image_to_return
 

@@ -2,14 +2,15 @@ import pygame
 
 import component.Block
 import component.Box
+import component.Explosion
 
 
 class Map:
-    # 800, 600
     def __init__(self):
         self.set_of_block = pygame.sprite.Group()
         self.set_of_box = pygame.sprite.Group()
         self.set_of_bomb = pygame.sprite.Group()
+        self.set_of_explosion = pygame.sprite.Group()
 
     def block_initialize(self, blockIMG):
         x, y = 30, 30
@@ -36,7 +37,7 @@ class Map:
             x += 60
 
     def box_initialize(self, boxIMG, animation_hander_box):
-        positions_list = [(150, 80), (210, 80), (330, 80), (510, 80), (570, 80),
+        positions_list = [(210, 80), (330, 80), (510, 80), (570, 80), (690, 80),
                           (210, 140), (450, 140), (570, 140),
                           (150, 200), (270, 200), (330, 200), (450, 200), (630, 200),
                           (90, 260), (210, 260), (450, 260), (690, 260),
@@ -52,6 +53,64 @@ class Map:
         self.set_of_block.draw(surface)
         self.set_of_box.draw(surface)
         self.set_of_bomb.draw(surface)
+        self.set_of_explosion.draw(surface)
 
     def add_bomb(self, bomb):
-        self.set_of_bomb.add(bomb)
+        if not pygame.sprite.spritecollide(bomb, self.set_of_bomb, False):
+            self.set_of_bomb.add(bomb)
+            return True
+        else:
+            return False
+
+    def add_explosions(self, explosionIMG, range, position):
+        new_position = self._calculate_position_for_explosion(position)
+        a, b = new_position
+        step = 70
+        print(position)
+        self.set_of_explosion.add(component.Explosion.Explosion(explosionIMG, new_position))
+        a += step
+        while a - new_position[0] < range:
+            explosion = component.Explosion.Explosion(explosionIMG, (a, new_position[1]))
+            if pygame.sprite.spritecollide(explosion, self.set_of_block, False):
+                break
+            elif pygame.sprite.spritecollide(explosion, self.set_of_box, True):
+                break
+            else:
+                self.set_of_explosion.add(explosion)
+            a += step
+        a = new_position[0] - step
+        while a - new_position[0] > range * -1:
+            explosion = component.Explosion.Explosion(explosionIMG, (a, new_position[1]))
+            if pygame.sprite.spritecollide(explosion, self.set_of_block, False):
+                break
+            elif pygame.sprite.spritecollide(explosion, self.set_of_box, True):
+                break
+            else:
+                self.set_of_explosion.add(explosion)
+            a -= step
+        b += step
+        while b - new_position[1] < range:
+            explosion = component.Explosion.Explosion(explosionIMG, (new_position[0], b))
+            if pygame.sprite.spritecollide(explosion, self.set_of_block, False):
+                break
+            elif pygame.sprite.spritecollide(explosion, self.set_of_box, True):
+                break
+            else:
+                self.set_of_explosion.add(explosion)
+            b += step
+        b = new_position[1] - step
+        while b - new_position[1] > range * -1:
+            explosion = component.Explosion.Explosion(explosionIMG, (new_position[0], b))
+            if pygame.sprite.spritecollide(explosion, self.set_of_block, False):
+                break
+            elif pygame.sprite.spritecollide(explosion, self.set_of_box, True):
+                break
+            else:
+                self.set_of_explosion.add(explosion)
+            b -= step
+
+    def _calculate_position_for_explosion(self, position):
+        x = (position[0] // 60) * 60 + 30
+        y = (position[1] // 60) * 60 + 30
+        print(x, y)
+        return x, y

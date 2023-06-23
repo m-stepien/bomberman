@@ -3,19 +3,19 @@ import controler.ImageControler
 import component.Player
 import component.AnimationHandler
 import component.KeyboardControl
-import component.Block
 import component.Map
-import component.Box
 import component.Bomb
+import component.Explosion
 import threading
 import time
 
 
-def bomb_clock(bomb, map, time_to_explode=3):
+def bomb_clock(bomb, map, explosionIMG, time_to_explode=3):
     time.sleep(time_to_explode)
     bomb.owner.bomb_used -= 1
     position = bomb.rect.center
     range = bomb.range
+    map.add_explosions(explosionIMG, range, position)
     bomb.kill()
 
 
@@ -51,14 +51,17 @@ boxIMG = image_controler.get_image("box1", (70, 70))
 animationHanderP1 = component.AnimationHandler.AnimationHandler([anime1, anime2, anime3, anime4])
 animationHanderP2 = component.AnimationHandler.AnimationHandler([anime11, anime22, anime33, anime44])
 animationHandler = component.AnimationHandler.AnimationHandler(anime_box)
-player = component.Player.Player(3, 1, 5, 15, player1IMG, (90, 90), animationHanderP1, player1_control)
-player2 = component.Player.Player(3, 1, 5, 15, player2IMG, (690, 570), animationHanderP2, player2_control)
+player = component.Player.Player(3, 3, 5, 150, player1IMG, (90, 90), animationHanderP1, player1_control)
+player2 = component.Player.Player(3, 3, 5, 150, player2IMG, (690, 570), animationHanderP2, player2_control)
 blockIMG = image_controler.get_image("block", temp_tup)
 map = component.Map.Map()
 map.block_initialize(blockIMG)
 map.box_initialize(boxIMG, animationHandler)
 bombIMG = image_controler.get_image("game_bomb", (30, 30))
-while window_open:
+
+explosionIMG = image_controler.get_image("explosion", (50, 50))
+while window_open and (player.life > 0 and player2.life > 0):
+    print(player.life)
     screen.blit(bg, (0, 0))
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -68,21 +71,21 @@ while window_open:
                 window_open = False
 
     keys_pressed = pygame.key.get_pressed()
-    player.update(keys_pressed, map.set_of_block, map.set_of_box)
-    player2.update(keys_pressed, map.set_of_block, map.set_of_box)
+    player.update(keys_pressed, map.set_of_block, map.set_of_box, map.set_of_explosion)
+    player2.update(keys_pressed, map.set_of_block, map.set_of_box, map.set_of_explosion)
     planting = player.planting_bomb_event(keys_pressed)
     if planting:
         bomb = component.Bomb.Bomb(bombIMG, planting[0], planting[1])
-        map.add_bomb(bomb)
-        thred = threading.Thread(target=bomb_clock, args=(bomb, map,), daemon=True)
-        thred.start()
+        if map.add_bomb(bomb):
+            thred = threading.Thread(target=bomb_clock, args=(bomb, map, explosionIMG), daemon=True)
+            thred.start()
 
     planting2 = player2.planting_bomb_event(keys_pressed)
     if planting2:
         bomb = component.Bomb.Bomb(bombIMG, planting2[0], planting2[1])
-        map.add_bomb(bomb)
-        thred = threading.Thread(target=bomb_clock, args=(bomb, map,), daemon=True)
-        thred.start()
+        if map.add_bomb(bomb):
+            thred = threading.Thread(target=bomb_clock, args=(bomb, map, explosionIMG), daemon=True)
+            thred.start()
     player.draw(screen)
     player2.draw(screen)
     map.draw(screen)
