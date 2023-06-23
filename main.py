@@ -7,6 +7,17 @@ import component.Block
 import component.Map
 import component.Box
 import component.Bomb
+import threading
+import time
+
+
+def bomb_clock(bomb, map, time_to_explode=3):
+    time.sleep(time_to_explode)
+    bomb.owner.bomb_used -= 1
+    position = bomb.rect.center
+    range = bomb.range
+    bomb.kill()
+
 
 temp_tup = (60, 60)
 pygame.init()
@@ -31,25 +42,22 @@ anime33 = image_controler.get_sequance_of_image_for_animation("character2_walk_l
 anime44 = image_controler.get_mirror_sequance_for_animation("character2_walk_left", temp_tup2)
 
 window_open = True
-# do zmiany na szybko
 anime1 = image_controler.get_sequance_of_image_for_animation("character1_walk_down", temp_tup2)
 anime2 = image_controler.get_sequance_of_image_for_animation("character1_walk_up", temp_tup2)
 anime3 = image_controler.get_sequance_of_image_for_animation("character1_walk_left", temp_tup2)
 anime4 = image_controler.get_mirror_sequance_for_animation("character1_walk_left", temp_tup2)
 anime_box = image_controler.get_sequance_of_image_for_animation("box", temp_tup)
-boxIMG = image_controler.get_image("box1", (70,70))
+boxIMG = image_controler.get_image("box1", (70, 70))
 animationHanderP1 = component.AnimationHandler.AnimationHandler([anime1, anime2, anime3, anime4])
 animationHanderP2 = component.AnimationHandler.AnimationHandler([anime11, anime22, anime33, anime44])
 animationHandler = component.AnimationHandler.AnimationHandler(anime_box)
 player = component.Player.Player(3, 1, 5, 15, player1IMG, (90, 90), animationHanderP1, player1_control)
 player2 = component.Player.Player(3, 1, 5, 15, player2IMG, (690, 570), animationHanderP2, player2_control)
 blockIMG = image_controler.get_image("block", temp_tup)
-block = component.Block.Block(blockIMG, (temp_tup[0] / 2, temp_tup[1] / 2))
-box = component.Box.Box(boxIMG, (630,200), animationHandler, None)
 map = component.Map.Map()
 map.block_initialize(blockIMG)
 map.box_initialize(boxIMG, animationHandler)
-bombIMG = image_controler.get_image("game_bomb",(30,30))
+bombIMG = image_controler.get_image("game_bomb", (30, 30))
 while window_open:
     screen.blit(bg, (0, 0))
     for event in pygame.event.get():
@@ -66,11 +74,18 @@ while window_open:
     if planting:
         bomb = component.Bomb.Bomb(bombIMG, planting[0], planting[1])
         map.add_bomb(bomb)
+        thred = threading.Thread(target=bomb_clock, args=(bomb, map,), daemon=True)
+        thred.start()
+
+    planting2 = player2.planting_bomb_event(keys_pressed)
+    if planting2:
+        bomb = component.Bomb.Bomb(bombIMG, planting2[0], planting2[1])
+        map.add_bomb(bomb)
+        thred = threading.Thread(target=bomb_clock, args=(bomb, map,), daemon=True)
+        thred.start()
     player.draw(screen)
     player2.draw(screen)
-    block.draw(screen)
     map.draw(screen)
-    box.draw(screen)
     pygame.display.flip()
     clock.tick(30)
 pygame.quit()

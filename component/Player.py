@@ -6,7 +6,6 @@ class Player(pygame.sprite.Sprite):
     def __init__(self, live, defualt_bomb_num, defualt_speed, defualt_bomb_range, image, initial_position,
                  animation_handler, control):
         self.image = image
-        self.position = initial_position
         self.live = live
         self.bomb_number = defualt_bomb_num
         self.speed = defualt_speed
@@ -45,7 +44,7 @@ class Player(pygame.sprite.Sprite):
     def planting_bomb_event(self, keys_pressed):
         if keys_pressed[self.control.SET_BOMB] and self.bomb_number - self.bomb_used > 0:
             self.bomb_used += 1
-            return self, self.position
+            return self, self.rect.center
 
     def draw(self, surface):
         surface.blit(self.image, self.rect)
@@ -56,5 +55,5 @@ class Player(pygame.sprite.Sprite):
 
     def plant_bom(self):
         if self.bomb_number - self.bomb_used > 0:
-            bomb = component.Bomb.Bomb(self.bombIMG, self.position, self.bomb_range)
+            bomb = component.Bomb.Bomb(self.bombIMG, self.rect.center, self.bomb_range)
             return bomb
