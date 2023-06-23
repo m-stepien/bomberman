@@ -6,6 +6,7 @@ import component.KeyboardControl
 import component.Block
 import component.Map
 import component.Box
+import component.Bomb
 
 temp_tup = (60, 60)
 pygame.init()
@@ -40,16 +41,15 @@ boxIMG = image_controler.get_image("box1", (70,70))
 animationHanderP1 = component.AnimationHandler.AnimationHandler([anime1, anime2, anime3, anime4])
 animationHanderP2 = component.AnimationHandler.AnimationHandler([anime11, anime22, anime33, anime44])
 animationHandler = component.AnimationHandler.AnimationHandler(anime_box)
-player = component.Player.Player(3, 1, 5, 15, player1IMG, (90, 90), animationHanderP1, player1_control,
-                                 False)
-player2 = component.Player.Player(3, 1, 5, 15, player2IMG, (690, 570), animationHanderP2, player2_control,
-                                  False)
+player = component.Player.Player(3, 1, 5, 15, player1IMG, (90, 90), animationHanderP1, player1_control)
+player2 = component.Player.Player(3, 1, 5, 15, player2IMG, (690, 570), animationHanderP2, player2_control)
 blockIMG = image_controler.get_image("block", temp_tup)
 block = component.Block.Block(blockIMG, (temp_tup[0] / 2, temp_tup[1] / 2))
 box = component.Box.Box(boxIMG, (630,200), animationHandler, None)
 map = component.Map.Map()
 map.block_initialize(blockIMG)
 map.box_initialize(boxIMG, animationHandler)
+bombIMG = image_controler.get_image("game_bomb",(30,30))
 while window_open:
     screen.blit(bg, (0, 0))
     for event in pygame.event.get():
@@ -62,6 +62,10 @@ while window_open:
     keys_pressed = pygame.key.get_pressed()
     player.update(keys_pressed, map.set_of_block, map.set_of_box)
     player2.update(keys_pressed, map.set_of_block, map.set_of_box)
+    planting = player.planting_bomb_event(keys_pressed)
+    if planting:
+        bomb = component.Bomb.Bomb(bombIMG, planting[0], planting[1])
+        map.add_bomb(bomb)
     player.draw(screen)
     player2.draw(screen)
     block.draw(screen)
