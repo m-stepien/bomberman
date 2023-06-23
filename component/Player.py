@@ -42,11 +42,13 @@ class Player(pygame.sprite.Sprite):
 
     def planting_bomb_event(self, keys_pressed):
         if keys_pressed[self.control.SET_BOMB] and self.bomb_number - self.bomb_used > 0:
-            self.bomb_used += 1
             return self, self.rect.center
 
     def draw(self, surface):
         surface.blit(self.image, self.rect)
+
+    def increase_used_bomb(self):
+        self.bomb_used += 1
 
     def colide(self, block_group, box_group, movement):
         if pygame.sprite.spritecollide(self, block_group, False) \

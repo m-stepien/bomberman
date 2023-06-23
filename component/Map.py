@@ -58,8 +58,10 @@ class Map:
     def add_bomb(self, bomb):
         if not pygame.sprite.spritecollide(bomb, self.set_of_bomb, False):
             self.set_of_bomb.add(bomb)
+            print("tak")
             return True
         else:
+            print("nope")
             return False
 
     def add_explosions(self, explosionIMG, range, position):
