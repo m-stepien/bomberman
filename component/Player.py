@@ -18,11 +18,11 @@ class Player(pygame.sprite.Sprite):
         self.control = control
         super().__init__()
 
-    def update(self, keys_pressed, block_group):
-        self._handle_events(keys_pressed, block_group)
+    def update(self, keys_pressed, block_group, box_group):
+        self._handle_events(keys_pressed, block_group, box_group)
         pass
 
-    def _handle_events(self, keys_pressed, block_group):
+    def _handle_events(self, keys_pressed, block_group, box_group):
         movement = None
         if keys_pressed[self.control.LEFT]:
             movement = [-self.speed, 0]
@@ -41,14 +41,13 @@ class Player(pygame.sprite.Sprite):
             print("KABOOM?")
         if movement:
             self.rect.move_ip(movement)
-            self.colide(block_group, movement)
+            self.colide(block_group,box_group, movement)
 
     def draw(self, surface):
         surface.blit(self.image, self.rect)
 
-
-    def colide(self, block_group, movement):
-        if pygame.sprite.spritecollide(self, block_group, False):
+    def colide(self, block_group, box_group, movement):
+        if pygame.sprite.spritecollide(self, block_group, False) or pygame.sprite.spritecollide(self, box_group, False):
             self.rect.move_ip([-movement[0], -movement[1]])
 
     def plant_bom(self):

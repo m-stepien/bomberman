@@ -1,9 +1,11 @@
 import pygame.sprite
 
+import component.Block
 
-class Box(pygame.sprite.Sprite):
-    def __init__(self, image, position):
-        self.image = image
-        self.position = position
-        pygame.sprite.Sprite.__init__()
+
+class Box(component.Block.Block):
+    def __init__(self, image, position, animation_handler, bonus=None):
+        self.animation_handler = animation_handler
+        self.bonus = bonus
+        component.Block.Block.__init__(self, image, position)
 
