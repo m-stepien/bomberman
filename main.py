@@ -9,14 +9,16 @@ import component.Explosion
 import threading
 import time
 
-
-def bomb_clock(bomb, map, explosionIMG, time_to_explode=3):
+# for i in range(self.player.lives):
+#     surface.blit(IMAGES['PLAYERLIFE'], [20 + 40 * i, 15])
+def bomb_clock(bomb, map, explosionIMG, time_to_explode=1.5):
     time.sleep(time_to_explode)
     bomb.owner.bomb_used -= 1
     position = bomb.rect.center
     range = bomb.range
     map.add_explosions(explosionIMG, range, position)
     bomb.kill()
+
 
 character_size = (50, 50)
 box_size = (60, 60)
@@ -29,7 +31,6 @@ icon = image_controler.get_image('bomb_screen_icon')
 pygame.display.set_icon(icon)
 pygame.display.set_caption('Bomberman')
 bg = image_controler.get_image('background')
-
 
 player1IMG = image_controler.get_image('character1_walk_down_0', character_size)
 player2IMG = image_controler.get_image('character2_walk_down_0', character_size)
@@ -52,13 +53,12 @@ anime44 = image_controler.get_mirror_sequance_for_animation("character2_walk_lef
 
 anime_box = image_controler.get_sequance_of_image_for_animation("box", box_size)
 
-
 box_img = image_controler.get_image("box1", box_size)
 animation_handler_p1 = component.AnimationHandler.AnimationHandler([anime1, anime2, anime3, anime4])
 animation_handler_p2 = component.AnimationHandler.AnimationHandler([anime11, anime22, anime33, anime44])
 animation_handler_box = component.AnimationHandler.AnimationHandler(anime_box)
-player = component.Player.Player(3, 3, 5, 150, player1IMG, (90, 90), animation_handler_p1, player1_control)
-player2 = component.Player.Player(3, 3, 5, 150, player2IMG, (690, 570), animation_handler_p2, player2_control)
+player = component.Player.Player(3, 3, 5, 150, player1IMG, (690, 570), animation_handler_p1, player1_control)
+player2 = component.Player.Player(3, 3, 5, 150, player2IMG, (90, 90), animation_handler_p2, player2_control)
 blockIMG = image_controler.get_image("block", box_size)
 map = component.Map.Map()
 map.block_initialize(blockIMG)

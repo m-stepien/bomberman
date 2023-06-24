@@ -4,7 +4,7 @@ import threading
 
 
 class Explosion(pygame.sprite.Sprite):
-    def __init__(self, image, position, time_of_exist=1):
+    def __init__(self, image, position, time_of_exist=0.3):
         pygame.sprite.Sprite.__init__(self)
         self.image = image
         self.rect = self.image.get_rect()

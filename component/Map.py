@@ -67,7 +67,7 @@ class Map:
     def add_explosions(self, explosionIMG, range, position):
         new_position = self._calculate_position_for_explosion(position)
         a, b = new_position
-        step = 70
+        step = 60
         print(position)
         self.set_of_explosion.add(component.Explosion.Explosion(explosionIMG, new_position))
         a += step

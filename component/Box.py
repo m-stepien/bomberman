@@ -8,4 +8,3 @@ class Box(component.Block.Block):
         self.animation_handler = animation_handler
         self.bonus = bonus
         component.Block.Block.__init__(self, image, position)
-
