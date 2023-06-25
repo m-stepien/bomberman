@@ -3,6 +3,8 @@ import pygame
 import component.Block
 import component.Box
 import component.Explosion
+import threading
+import time
 
 
 class Map:
@@ -73,9 +75,12 @@ class Map:
         a += step
         while a - new_position[0] < range:
             explosion = component.Explosion.Explosion(explosionIMG, (a, new_position[1]))
+            colide_box = pygame.sprite.spritecollide(explosion, self.set_of_box, False)
             if pygame.sprite.spritecollide(explosion, self.set_of_block, False):
                 break
-            elif pygame.sprite.spritecollide(explosion, self.set_of_box, True):
+            elif len(colide_box) > 0:
+                thred = threading.Thread(target=self._destruction_of_box, args=(colide_box[0],), daemon=True)
+                thred.start()
                 break
             else:
                 self.set_of_explosion.add(explosion)
@@ -83,9 +88,12 @@ class Map:
         a = new_position[0] - step
         while a - new_position[0] > range * -1:
             explosion = component.Explosion.Explosion(explosionIMG, (a, new_position[1]))
+            colide_box = pygame.sprite.spritecollide(explosion, self.set_of_box, False)
             if pygame.sprite.spritecollide(explosion, self.set_of_block, False):
                 break
-            elif pygame.sprite.spritecollide(explosion, self.set_of_box, True):
+            elif len(colide_box)>0:
+                thred = threading.Thread(target=self._destruction_of_box, args=(colide_box[0],), daemon=True)
+                thred.start()
                 break
             else:
                 self.set_of_explosion.add(explosion)
@@ -93,9 +101,13 @@ class Map:
         b += step
         while b - new_position[1] < range:
             explosion = component.Explosion.Explosion(explosionIMG, (new_position[0], b))
+            colide_box = pygame.sprite.spritecollide(explosion, self.set_of_box, False)
+
             if pygame.sprite.spritecollide(explosion, self.set_of_block, False):
                 break
-            elif pygame.sprite.spritecollide(explosion, self.set_of_box, True):
+            elif len(colide_box)>0:
+                thred = threading.Thread(target=self._destruction_of_box, args=(colide_box[0],), daemon=True)
+                thred.start()
                 break
             else:
                 self.set_of_explosion.add(explosion)
@@ -103,13 +115,24 @@ class Map:
         b = new_position[1] - step
         while b - new_position[1] > range * -1:
             explosion = component.Explosion.Explosion(explosionIMG, (new_position[0], b))
+            colide_box = pygame.sprite.spritecollide(explosion, self.set_of_box, False)
+
             if pygame.sprite.spritecollide(explosion, self.set_of_block, False):
                 break
-            elif pygame.sprite.spritecollide(explosion, self.set_of_box, True):
+            elif len(colide_box) > 0:
+                thred = threading.Thread(target=self._destruction_of_box, args=(colide_box[0],), daemon=True)
+                thred.start()
                 break
             else:
                 self.set_of_explosion.add(explosion)
             b -= step
+
+    def _destruction_of_box(self, box):
+        for _ in range(0, box.animation_handler.get_len_of_animation(0)):
+            print(box.animation_handler.get_len_of_animation(0))
+            box.image = box.animation_handler.run(0)
+            time.sleep(5.06)
+        box.kill()
 
     def _calculate_position_for_explosion(self, position):
         x = (position[0] // 60) * 60 + 30

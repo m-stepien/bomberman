@@ -9,6 +9,50 @@ import component.Explosion
 import threading
 import time
 
+
+def game():
+    while (player.life > 0 and player2.life > 0):
+        screen.blit(bg, (0, 0))
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                window_open = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    window_open = False
+
+        keys_pressed = pygame.key.get_pressed()
+        player.update(keys_pressed, map.set_of_block, map.set_of_box, map.set_of_explosion)
+        player2.update(keys_pressed, map.set_of_block, map.set_of_box, map.set_of_explosion)
+        planting = player.planting_bomb_event(keys_pressed)
+        if planting:
+            bomb = component.Bomb.Bomb(bombIMG, planting[0], planting[1])
+            if map.add_bomb(bomb):
+                thred = threading.Thread(target=bomb_clock, args=(bomb, map, explosion_img), daemon=True)
+                thred.start()
+                player.increase_used_bomb()
+        planting2 = player2.planting_bomb_event(keys_pressed)
+        if planting2:
+            bomb = component.Bomb.Bomb(bombIMG, planting2[0], planting2[1])
+            if map.add_bomb(bomb):
+                thred = threading.Thread(target=bomb_clock, args=(bomb, map, explosion_img), daemon=True)
+                thred.start()
+                player2.increase_used_bomb()
+        map.draw(screen)
+        player.draw(screen)
+        player2.draw(screen)
+        pygame.display.flip()
+        clock.tick(30)
+
+
+def main_menu():
+    menu_on = True
+    while menu_on:
+        screen.blit(bg, (0, 0))
+        mouse_position = pygame.mouse.get_pos()
+        title = pygame.get_font(100).render("BOMBERMAN", True, "#b58f40")
+        title.getRect(center=(WIDTH, HEIGHT))
+
+
 # for i in range(self.player.lives):
 #     surface.blit(IMAGES['PLAYERLIFE'], [20 + 40 * i, 15])
 def bomb_clock(bomb, map, explosionIMG, time_to_explode=1.5):
@@ -53,10 +97,10 @@ anime44 = image_controler.get_mirror_sequance_for_animation("character2_walk_lef
 
 anime_box = image_controler.get_sequance_of_image_for_animation("box", box_size)
 
-box_img = image_controler.get_image("box1", box_size)
+box_img = image_controler.get_image("box0", box_size)
 animation_handler_p1 = component.AnimationHandler.AnimationHandler([anime1, anime2, anime3, anime4])
 animation_handler_p2 = component.AnimationHandler.AnimationHandler([anime11, anime22, anime33, anime44])
-animation_handler_box = component.AnimationHandler.AnimationHandler(anime_box)
+animation_handler_box = component.AnimationHandler.AnimationHandler([anime_box])
 player = component.Player.Player(3, 3, 5, 150, player1IMG, (690, 570), animation_handler_p1, player1_control)
 player2 = component.Player.Player(3, 3, 5, 150, player2IMG, (90, 90), animation_handler_p2, player2_control)
 blockIMG = image_controler.get_image("block", box_size)
@@ -65,8 +109,9 @@ map.block_initialize(blockIMG)
 map.box_initialize(box_img, animation_handler_box)
 
 window_open = True
-while window_open and (player.life > 0 and player2.life > 0):
-    screen.blit(bg, (0, 0))
+while window_open:
+    # main_menu()
+    game()
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             window_open = False
@@ -74,27 +119,4 @@ while window_open and (player.life > 0 and player2.life > 0):
             if event.key == pygame.K_ESCAPE:
                 window_open = False
 
-    keys_pressed = pygame.key.get_pressed()
-    player.update(keys_pressed, map.set_of_block, map.set_of_box, map.set_of_explosion)
-    player2.update(keys_pressed, map.set_of_block, map.set_of_box, map.set_of_explosion)
-    planting = player.planting_bomb_event(keys_pressed)
-    if planting:
-        print("Wchodze")
-        bomb = component.Bomb.Bomb(bombIMG, planting[0], planting[1])
-        if map.add_bomb(bomb):
-            thred = threading.Thread(target=bomb_clock, args=(bomb, map, explosion_img), daemon=True)
-            thred.start()
-            player.increase_used_bomb()
-    planting2 = player2.planting_bomb_event(keys_pressed)
-    if planting2:
-        bomb = component.Bomb.Bomb(bombIMG, planting2[0], planting2[1])
-        if map.add_bomb(bomb):
-            thred = threading.Thread(target=bomb_clock, args=(bomb, map, explosion_img), daemon=True)
-            thred.start()
-            player2.increase_used_bomb()
-    map.draw(screen)
-    player.draw(screen)
-    player2.draw(screen)
-    pygame.display.flip()
-    clock.tick(30)
 pygame.quit()
