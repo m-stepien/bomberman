@@ -79,6 +79,7 @@ while window_open and (player.life > 0 and player2.life > 0):
     player2.update(keys_pressed, map.set_of_block, map.set_of_box, map.set_of_explosion)
     planting = player.planting_bomb_event(keys_pressed)
     if planting:
+        print("Wchodze")
         bomb = component.Bomb.Bomb(bombIMG, planting[0], planting[1])
         if map.add_bomb(bomb):
             thred = threading.Thread(target=bomb_clock, args=(bomb, map, explosion_img), daemon=True)
@@ -90,7 +91,7 @@ while window_open and (player.life > 0 and player2.life > 0):
         if map.add_bomb(bomb):
             thred = threading.Thread(target=bomb_clock, args=(bomb, map, explosion_img), daemon=True)
             thred.start()
-            player.increase_used_bomb()
+            player2.increase_used_bomb()
     map.draw(screen)
     player.draw(screen)
     player2.draw(screen)

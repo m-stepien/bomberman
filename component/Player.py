@@ -51,10 +51,32 @@ class Player(pygame.sprite.Sprite):
         self.bomb_used += 1
 
     def colide(self, block_group, box_group, movement):
-        if pygame.sprite.spritecollide(self, block_group, False) \
+        block_colide_list_sprite = pygame.sprite.spritecollide(self, block_group, False, collided=pygame.sprite.collide_mask)
+        if block_colide_list_sprite \
                 or pygame.sprite.spritecollide(self, box_group, False):
+            if len(block_colide_list_sprite) > 0:
+                self.check_if_movement_correction_needed(block_colide_list_sprite, movement)
             self.rect.move_ip([-movement[0], -movement[1]])
 
     def life_update(self, explosion_g):
         if pygame.sprite.spritecollide(self, explosion_g, True):
             self.life -= 1
+
+    #to repair
+    def check_if_movement_correction_needed(self, block_colide_list, movement):
+        block = block_colide_list[0]
+        print(self.rect[0], self.rect[1], self.rect[2], self.rect[3])
+        print(block.rect[0], block.rect[1], block.rect[2], block.rect[3])
+        if movement[0] != 0:
+            if 0 < block.rect[1] + block.rect[3] / 2 - (self.rect[1] - self.rect[3] / 2) < 15:
+                self.rect.move_ip(0, 15)
+            elif 0 > block.rect[1] - block.rect[3] / 2 - (self.rect[1] + self.rect[3] / 2) > -15:
+                self.rect.move_ip(0, -15)
+        elif movement[1] != 0:
+            if 0 < block.rect[0] + block.rect[2] / 2 - (self.rect[0] - self.rect[2] / 2) < 15:
+                self.rect.move_ip(15, 0)
+            elif 0 > block.rect[0] - block.rect[2] / 2 - (self.rect[0] + self.rect[2] / 2) > 15:
+                self.rect.move_ip(15, 0)
+
+    def movement_correction(self, colidet_block, movement):
+        pass
