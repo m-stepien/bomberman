@@ -14,27 +14,27 @@ class Map:
         self.set_of_bomb = pygame.sprite.Group()
         self.set_of_explosion = pygame.sprite.Group()
 
-    def block_initialize(self, blockIMG):
+    def block_initialize(self, blockIMG, width, height):
         x, y = 30, 30
-        while x < 780:
+        while x < width:
             self.set_of_block.add(component.Block.Block(blockIMG, (x, y)))
             x += 60
         x = 30
         i = 0
         y += 60
-        while y < 660 - 60:
+        while y < height - 60:
             self.set_of_block.add(component.Block.Block(blockIMG, (x, y)))
-            self.set_of_block.add(component.Block.Block(blockIMG, (780 - x, y)))
+            self.set_of_block.add(component.Block.Block(blockIMG, (width - x, y)))
             if i % 2:
                 x += 60 * 2
-                while x < 780 - 60:
+                while x < width - 60:
                     self.set_of_block.add(component.Block.Block(blockIMG, (x, y)))
                     x += 60 * 2
 
                 x = 30
             i += 1
             y += 60
-        while x < 780:
+        while x < width:
             self.set_of_block.add(component.Block.Block(blockIMG, (x, y)))
             x += 60
 

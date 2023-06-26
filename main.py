@@ -10,6 +10,7 @@ import component.Button
 import component.HeartManager
 import threading
 import time
+import os
 
 
 def end_menu(event, winner):
@@ -18,7 +19,7 @@ def end_menu(event, winner):
     font = pygame.font.Font(None, 30)
     text_surface = font.render("The winner is {}".format(winner), True, (0, 0, 0))
     text_rect = text_surface.get_rect()
-    text_rect.center =(WIDTH / 2, 100),
+    text_rect.center = (WIDTH / 2, 100),
     screen.blit(text_surface, text_rect)
     button_back = component.Button.Button(WIDTH / 2 - 75, 300, 150, 50, "BACK")
     button_quit = component.Button.Button(WIDTH / 2 - 75, 375, 150, 50, "END")
@@ -29,7 +30,6 @@ def end_menu(event, winner):
     if button_back.clicked:
         state = 0
     elif button_quit.clicked:
-
         state = -1
     return state
 
@@ -72,7 +72,7 @@ def game():
 
         pygame.display.flip()
         clock.tick(30)
-    if player.life>0:
+    if player.life > 0:
         return "Player1"
     else:
         return "Player2"
@@ -94,18 +94,21 @@ def main_menu(event):
     return state
 
 
-# for i in range(self.player.lives):
-#     surface.blit(IMAGES['PLAYERLIFE'], [20 + 40 * i, 15])
+
+
 def bomb_clock(bomb, map, explosionIMG, time_to_explode=1.5):
+    bomb_sound = pygame.mixer.Sound(os.path.join(os.getcwd(), "resources/music/kabum.wav"))
     time.sleep(time_to_explode)
     bomb.owner.bomb_used -= 1
     position = bomb.rect.center
     range = bomb.range
+    bomb_sound.play()
     map.add_explosions(explosionIMG, range, position)
     bomb.kill()
 
 
-
+CHARACTER_SIZE = (50, 50)
+BOX_SIZE = (60, 60)
 pygame.init()
 SCREENSIZE = WIDTH, HEIGHT = 780, 660
 screen = pygame.display.set_mode(SCREENSIZE)
@@ -116,43 +119,40 @@ pygame.display.set_icon(icon)
 pygame.display.set_caption('Bomberman')
 bg = image_controler.get_image('background')
 
-player1IMG = image_controler.get_image('character1_walk_down_0', character_size)
-player2IMG = image_controler.get_image('character2_walk_down_0', character_size)
+player1IMG = image_controler.get_image('character1_walk_down_0', CHARACTER_SIZE)
+player2IMG = image_controler.get_image('character2_walk_down_0', CHARACTER_SIZE)
 bombIMG = image_controler.get_image("game_bomb", (30, 30))
-explosion_img = image_controler.get_image("explosion", character_size)
+explosion_img = image_controler.get_image("explosion", CHARACTER_SIZE)
 main_menu_img = image_controler.get_image("main_menu_screen")
 player1_control = component.KeyboardControl.KeyboardControl(pygame.K_LEFT, pygame.K_RIGHT, pygame.K_UP, pygame.K_DOWN,
                                                             pygame.K_SLASH)
 player2_control = component.KeyboardControl.KeyboardControl(pygame.K_a, pygame.K_d, pygame.K_w, pygame.K_s,
                                                             pygame.K_SPACE)
-anime1 = image_controler.get_sequance_of_image_for_animation("character1_walk_down", character_size)
-anime2 = image_controler.get_sequance_of_image_for_animation("character1_walk_up", character_size)
-anime3 = image_controler.get_sequance_of_image_for_animation("character1_walk_left", character_size)
-anime4 = image_controler.get_mirror_sequance_for_animation("character1_walk_left", character_size)
-anime5 = image_controler.get_sequance_of_image_for_animation("character_1_get_hit", character_size)
+anime1 = image_controler.get_sequance_of_image_for_animation("character1_walk_down", CHARACTER_SIZE)
+anime2 = image_controler.get_sequance_of_image_for_animation("character1_walk_up", CHARACTER_SIZE)
+anime3 = image_controler.get_sequance_of_image_for_animation("character1_walk_left", CHARACTER_SIZE)
+anime4 = image_controler.get_mirror_sequance_for_animation("character1_walk_left", CHARACTER_SIZE)
+anime5 = image_controler.get_sequance_of_image_for_animation("character_1_get_hit", CHARACTER_SIZE)
 
-anime11 = image_controler.get_sequance_of_image_for_animation("character2_walk_down", character_size)
-anime22 = image_controler.get_sequance_of_image_for_animation("character2_walk_up", character_size)
-anime33 = image_controler.get_sequance_of_image_for_animation("character2_walk_left", character_size)
-anime44 = image_controler.get_mirror_sequance_for_animation("character2_walk_left", character_size)
-anime55 = image_controler.get_sequance_of_image_for_animation("character_2_get_hit", character_size)
+anime11 = image_controler.get_sequance_of_image_for_animation("character2_walk_down", CHARACTER_SIZE)
+anime22 = image_controler.get_sequance_of_image_for_animation("character2_walk_up", CHARACTER_SIZE)
+anime33 = image_controler.get_sequance_of_image_for_animation("character2_walk_left", CHARACTER_SIZE)
+anime44 = image_controler.get_mirror_sequance_for_animation("character2_walk_left", CHARACTER_SIZE)
+anime55 = image_controler.get_sequance_of_image_for_animation("character_2_get_hit", CHARACTER_SIZE)
 
-anime_box = image_controler.get_sequance_of_image_for_animation("box", box_size)
+anime_box = image_controler.get_sequance_of_image_for_animation("box", BOX_SIZE)
 heart_img = image_controler.get_image("heart", (30, 30))
-heart_manager = component.HeartManager.HeartManager(heart_img, (20, 20), 3, SCREENSIZE)
-box_img = image_controler.get_image("box1", box_size)
+box_img = image_controler.get_image("box1", BOX_SIZE)
 animation_handler_p1 = component.AnimationHandler.AnimationHandler([anime1, anime2, anime3, anime4, anime5])
 animation_handler_p2 = component.AnimationHandler.AnimationHandler([anime11, anime22, anime33, anime44, anime55])
 animation_handler_box = component.AnimationHandler.AnimationHandler([anime_box])
-player = component.Player.Player(3, 3, 5, 150, player1IMG, (690, 570), animation_handler_p1, player1_control)
-player2 = component.Player.Player(3, 3, 5, 150, player2IMG, (90, 90), animation_handler_p2, player2_control)
-blockIMG = image_controler.get_image("block", box_size)
-map = component.Map.Map()
-map.block_initialize(blockIMG)
-map.box_initialize(box_img, animation_handler_box)
+blockIMG = image_controler.get_image("block", BOX_SIZE)
 
+pygame.mixer.music.load(os.path.join(os.getcwd(), "resources/music/background_music.wav"))
+pygame.mixer.music.play(-1)
 window_open = True
 state = 0
+winner = None
 while window_open:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -165,10 +165,18 @@ while window_open:
         elif state == -1:
             window_open = False
         if state == 1:
+            player = component.Player.Player(3, 3, 5, 150, player1IMG, (690, 570), animation_handler_p1,
+                                             player1_control)
+            player2 = component.Player.Player(3, 3, 5, 150, player2IMG, (90, 90), animation_handler_p2, player2_control)
+            heart_manager = component.HeartManager.HeartManager(heart_img, (20, 20), 3, SCREENSIZE)
+            map = component.Map.Map()
+            map.block_initialize(blockIMG, WIDTH, HEIGHT)
+            map.box_initialize(box_img, animation_handler_box)
             winner = game()
-            if winner:
-                state = end_menu(event, winner)
-
+        if winner:
+            state = end_menu(event, winner)
+            if state !=2:
+                winner = None
 
     pygame.display.flip()
     clock.tick(30)

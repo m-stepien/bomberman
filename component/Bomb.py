@@ -1,7 +1,10 @@
 import pygame.sprite
+import pygame.mixer
+import os
 
 
 class Bomb(pygame.sprite.Sprite):
+
     def __init__(self, image, owner, position):
         self.image = image
         self.owner = owner
@@ -13,5 +16,3 @@ class Bomb(pygame.sprite.Sprite):
 
     def draw(self, surface):
         surface.blit(self.image, self.rect)
-
-
