@@ -13,6 +13,14 @@ import time
 import os
 
 
+def add_bomb_to_map(planting, player):
+    bomb = component.Bomb.Bomb(bombIMG, planting[0], planting[1])
+    if map.add_bomb(bomb):
+        thred = threading.Thread(target=bomb_clock, args=(bomb, map, explosion_img), daemon=True)
+        thred.start()
+        player.increase_used_bomb()
+
+
 def end_menu(event, winner):
     screen.blit(bg, (0, 0))
     state = 2
@@ -51,20 +59,13 @@ def game():
         player.update(keys_pressed, map.set_of_block, map.set_of_box, map.set_of_explosion)
         player2.update(keys_pressed, map.set_of_block, map.set_of_box, map.set_of_explosion)
         planting = player.planting_bomb_event(keys_pressed)
+        planting2 = player2.planting_bomb_event(keys_pressed)
         heart_manager.update(player.life, player2.life)
         if planting:
-            bomb = component.Bomb.Bomb(bombIMG, planting[0], planting[1])
-            if map.add_bomb(bomb):
-                thred = threading.Thread(target=bomb_clock, args=(bomb, map, explosion_img), daemon=True)
-                thred.start()
-                player.increase_used_bomb()
-        planting2 = player2.planting_bomb_event(keys_pressed)
+            add_bomb_to_map(planting, player)
+
         if planting2:
-            bomb = component.Bomb.Bomb(bombIMG, planting2[0], planting2[1])
-            if map.add_bomb(bomb):
-                thred = threading.Thread(target=bomb_clock, args=(bomb, map, explosion_img), daemon=True)
-                thred.start()
-                player2.increase_used_bomb()
+            add_bomb_to_map(planting2, player2)
         map.draw(screen)
         player.draw(screen)
         player2.draw(screen)
@@ -94,8 +95,6 @@ def main_menu(event):
     return state
 
 
-
-
 def bomb_clock(bomb, map, explosionIMG, time_to_explode=1.5):
     bomb_sound = pygame.mixer.Sound(os.path.join(os.getcwd(), "resources/music/kabum.wav"))
     time.sleep(time_to_explode)
@@ -109,6 +108,7 @@ def bomb_clock(bomb, map, explosionIMG, time_to_explode=1.5):
 
 CHARACTER_SIZE = (50, 50)
 BOX_SIZE = (60, 60)
+SMALL_ELEMENT_SIZE = (30, 30)
 pygame.init()
 SCREENSIZE = WIDTH, HEIGHT = 780, 660
 screen = pygame.display.set_mode(SCREENSIZE)
@@ -121,7 +121,7 @@ bg = image_controler.get_image('background')
 
 player1IMG = image_controler.get_image('character1_walk_down_0', CHARACTER_SIZE)
 player2IMG = image_controler.get_image('character2_walk_down_0', CHARACTER_SIZE)
-bombIMG = image_controler.get_image("game_bomb", (30, 30))
+bombIMG = image_controler.get_image("game_bomb", SMALL_ELEMENT_SIZE)
 explosion_img = image_controler.get_image("explosion", CHARACTER_SIZE)
 main_menu_img = image_controler.get_image("main_menu_screen")
 player1_control = component.KeyboardControl.KeyboardControl(pygame.K_LEFT, pygame.K_RIGHT, pygame.K_UP, pygame.K_DOWN,
@@ -141,7 +141,7 @@ anime44 = image_controler.get_mirror_sequance_for_animation("character2_walk_lef
 anime55 = image_controler.get_sequance_of_image_for_animation("character_2_get_hit", CHARACTER_SIZE)
 
 anime_box = image_controler.get_sequance_of_image_for_animation("box", BOX_SIZE)
-heart_img = image_controler.get_image("heart", (30, 30))
+heart_img = image_controler.get_image("heart", SMALL_ELEMENT_SIZE)
 box_img = image_controler.get_image("box1", BOX_SIZE)
 animation_handler_p1 = component.AnimationHandler.AnimationHandler([anime1, anime2, anime3, anime4, anime5])
 animation_handler_p2 = component.AnimationHandler.AnimationHandler([anime11, anime22, anime33, anime44, anime55])
@@ -160,11 +160,13 @@ while window_open:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 window_open = False
-        if state == 0:
+
+        elif state == 0:
             state = main_menu(event)
+
         elif state == -1:
             window_open = False
-        if state == 1:
+        elif state == 1:
             player = component.Player.Player(3, 3, 5, 150, player1IMG, (690, 570), animation_handler_p1,
                                              player1_control)
             player2 = component.Player.Player(3, 3, 5, 150, player2IMG, (90, 90), animation_handler_p2, player2_control)
@@ -173,10 +175,11 @@ while window_open:
             map.block_initialize(blockIMG, WIDTH, HEIGHT)
             map.box_initialize(box_img, animation_handler_box)
             winner = game()
-        if winner:
-            state = end_menu(event, winner)
-            if state !=2:
-                winner = None
+
+    if winner:
+        state = end_menu(event, winner)
+        if state != 2:
+            winner = None
 
     pygame.display.flip()
     clock.tick(30)
