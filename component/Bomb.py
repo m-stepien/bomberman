@@ -1,6 +1,5 @@
 import pygame.sprite
 import pygame.mixer
-import os
 
 
 class Bomb(pygame.sprite.Sprite):

@@ -14,31 +14,31 @@ class Map:
         self.set_of_bomb = pygame.sprite.Group()
         self.set_of_explosion = pygame.sprite.Group()
 
-    def block_initialize(self, blockIMG, width, height):
+    def block_initialize(self, block_img, width, height):
         x, y = 30, 30
         while x < width:
-            self.set_of_block.add(component.Block.Block(blockIMG, (x, y)))
+            self.set_of_block.add(component.Block.Block(block_img, (x, y)))
             x += 60
         x = 30
         i = 0
         y += 60
         while y < height - 60:
-            self.set_of_block.add(component.Block.Block(blockIMG, (x, y)))
-            self.set_of_block.add(component.Block.Block(blockIMG, (width - x, y)))
+            self.set_of_block.add(component.Block.Block(block_img, (x, y)))
+            self.set_of_block.add(component.Block.Block(block_img, (width - x, y)))
             if i % 2:
                 x += 60 * 2
                 while x < width - 60:
-                    self.set_of_block.add(component.Block.Block(blockIMG, (x, y)))
+                    self.set_of_block.add(component.Block.Block(block_img, (x, y)))
                     x += 60 * 2
 
                 x = 30
             i += 1
             y += 60
         while x < width:
-            self.set_of_block.add(component.Block.Block(blockIMG, (x, y)))
+            self.set_of_block.add(component.Block.Block(block_img, (x, y)))
             x += 60
 
-    def box_initialize(self, boxIMG, animation_hander_box):
+    def box_initialize(self, box_img, animation_hander_box):
         positions_list = [(210, 90), (330, 90), (510, 90), (570, 90), (690, 90),
                           (210, 150), (450, 150), (570, 150),
                           (150, 210), (270, 210), (330, 210), (450, 210), (630, 210),
@@ -49,7 +49,7 @@ class Map:
                           (90, 510), (330, 510), (570, 510),
                           (90, 570), (210, 570), (390, 570), (510, 570), (570, 570)]
         for position in positions_list:
-            self.set_of_box.add(component.Box.Box(boxIMG, position, animation_hander_box.copy()))
+            self.set_of_box.add(component.Box.Box(box_img, position, animation_hander_box.copy()))
 
     def draw(self, surface):
         self.set_of_block.draw(surface)
@@ -64,14 +64,14 @@ class Map:
         else:
             return False
 
-    def add_explosions(self, explosionIMG, range, position):
+    def add_explosions(self, explosion_img, bomb_range, position):
         new_position = self._calculate_position_for_explosion(position)
         a, b = new_position
         step = 30
-        self.set_of_explosion.add(component.Explosion.Explosion(explosionIMG, new_position))
+        self.set_of_explosion.add(component.Explosion.Explosion(explosion_img, new_position))
         a += step
-        while a - new_position[0] < range:
-            explosion = component.Explosion.Explosion(explosionIMG, (a, new_position[1]))
+        while a - new_position[0] < bomb_range:
+            explosion = component.Explosion.Explosion(explosion_img, (a, new_position[1]))
             colide_box = pygame.sprite.spritecollide(explosion, self.set_of_box, False)
             if pygame.sprite.spritecollide(explosion, self.set_of_block, False):
                 break
@@ -83,8 +83,8 @@ class Map:
                 self.set_of_explosion.add(explosion)
             a += step
         a = new_position[0] - step
-        while a - new_position[0] > range * -1:
-            explosion = component.Explosion.Explosion(explosionIMG, (a, new_position[1]))
+        while a - new_position[0] > bomb_range * -1:
+            explosion = component.Explosion.Explosion(explosion_img, (a, new_position[1]))
             colide_box = pygame.sprite.spritecollide(explosion, self.set_of_box, False)
             if pygame.sprite.spritecollide(explosion, self.set_of_block, False):
                 break
@@ -96,8 +96,8 @@ class Map:
                 self.set_of_explosion.add(explosion)
             a -= step
         b += step
-        while b - new_position[1] < range:
-            explosion = component.Explosion.Explosion(explosionIMG, (new_position[0], b))
+        while b - new_position[1] < bomb_range:
+            explosion = component.Explosion.Explosion(explosion_img, (new_position[0], b))
             colide_box = pygame.sprite.spritecollide(explosion, self.set_of_box, False)
 
             if pygame.sprite.spritecollide(explosion, self.set_of_block, False):
@@ -110,8 +110,8 @@ class Map:
                 self.set_of_explosion.add(explosion)
             b += step
         b = new_position[1] - step
-        while b - new_position[1] > range * -1:
-            explosion = component.Explosion.Explosion(explosionIMG, (new_position[0], b))
+        while b - new_position[1] > bomb_range * -1:
+            explosion = component.Explosion.Explosion(explosion_img, (new_position[0], b))
             colide_box = pygame.sprite.spritecollide(explosion, self.set_of_box, False)
 
             if pygame.sprite.spritecollide(explosion, self.set_of_block, False):

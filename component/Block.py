@@ -1,4 +1,6 @@
 import pygame
+
+
 class Block(pygame.sprite.Sprite):
     def __init__(self, image, position):
         pygame.sprite.Sprite.__init__(self)
@@ -9,4 +11,3 @@ class Block(pygame.sprite.Sprite):
 
     def draw(self, surface):
         surface.blit(self.image, self.rect)
-

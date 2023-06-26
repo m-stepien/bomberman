@@ -2,14 +2,10 @@ import pygame
 
 
 class Button:
-    BG_COLOR = (255, 255, 255)
     BUTTON_COLOR = (200, 200, 200)
     BUTTON_HOVER_COLOR = (150, 150, 150)
     BUTTON_TEXT_COLOR = (0, 0, 0)
     BUTTON_TEXT_HOVER_COLOR = (255, 255, 255)
-    BUTTON_WIDTH = 200
-    BUTTON_HEIGHT = 50
-    BUTTON_MARGIN = 20
     FONT_SIZE = 24
 
     def __init__(self, x, y, width, height, text, on_click=None):

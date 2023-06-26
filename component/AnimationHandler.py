@@ -24,4 +24,3 @@ class AnimationHandler:
 
     def copy(self):
         return self.__copy__()
-

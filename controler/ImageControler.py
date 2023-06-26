@@ -20,11 +20,11 @@ class ImageControler:
     def get_image(self, image_name, size=None):
         try:
             image_to_return = self.images[image_name.upper()]
+            if size:
+                image_to_return = pygame.transform.scale(image_to_return, size)
+            return image_to_return
         except Exception:
             exit(-1)
-        if size:
-            image_to_return = pygame.transform.scale(image_to_return, size)
-        return image_to_return
 
     def get_sequance_of_image_for_animation(self, sequance_name, size=None):
         animation = []

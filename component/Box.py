@@ -1,5 +1,3 @@
-import pygame.sprite
-
 import component.Block
 
 
