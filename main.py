@@ -6,12 +6,13 @@ import component.KeyboardControl
 import component.Map
 import component.Bomb
 import component.Explosion
+import component.Button
 import threading
 import time
 
 
 def game():
-    while (player.life > 0 and player2.life > 0):
+    while player.life > 0 and player2.life > 0:
         screen.blit(bg, (0, 0))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -44,13 +45,22 @@ def game():
         clock.tick(30)
 
 
-def main_menu():
-    menu_on = True
-    while menu_on:
-        screen.blit(bg, (0, 0))
-        mouse_position = pygame.mouse.get_pos()
-        title = pygame.get_font(100).render("BOMBERMAN", True, "#b58f40")
-        title.getRect(center=(WIDTH, HEIGHT))
+def main_menu(event):
+    screen.blit(main_menu_img, (0, 0))
+    state = 0
+    button_start = component.Button.Button(WIDTH / 2 - 75, 300, 150, 50, "START")
+    button_quit = component.Button.Button(WIDTH / 2 - 75, 375, 150, 50, "END")
+    button_start.handle_event(event)
+    button_quit.handle_event(event)
+    button_start.draw(screen)
+    button_quit.draw(screen)
+    if button_start.clicked:
+        state = 1
+    elif button_quit.clicked:
+        state = -1
+
+
+    return state
 
 
 # for i in range(self.player.lives):
@@ -80,7 +90,7 @@ player1IMG = image_controler.get_image('character1_walk_down_0', character_size)
 player2IMG = image_controler.get_image('character2_walk_down_0', character_size)
 bombIMG = image_controler.get_image("game_bomb", (30, 30))
 explosion_img = image_controler.get_image("explosion", character_size)
-
+main_menu_img = image_controler.get_image("main_menu_screen")
 player1_control = component.KeyboardControl.KeyboardControl(pygame.K_LEFT, pygame.K_RIGHT, pygame.K_UP, pygame.K_DOWN,
                                                             pygame.K_SLASH)
 player2_control = component.KeyboardControl.KeyboardControl(pygame.K_a, pygame.K_d, pygame.K_w, pygame.K_s,
@@ -109,14 +119,24 @@ map.block_initialize(blockIMG)
 map.box_initialize(box_img, animation_handler_box)
 
 window_open = True
+state = 0
 while window_open:
-    # main_menu()
-    game()
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             window_open = False
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 window_open = False
+        else:
+            state = main_menu(event)
+        if state == 1:
+            game()
+            #do zmiany na 2
+            state = 1
+        elif state == -1:
+            window_open = False
+
+    pygame.display.flip()
+    clock.tick(30)
 
 pygame.quit()
