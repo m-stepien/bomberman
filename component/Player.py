@@ -64,19 +64,20 @@ class Player(pygame.sprite.Sprite):
 
     #to repair
     def check_if_movement_correction_needed(self, block_colide_list, movement):
-        block = block_colide_list[0]
-        print(self.rect[0], self.rect[1], self.rect[2], self.rect[3])
-        print(block.rect[0], block.rect[1], block.rect[2], block.rect[3])
-        if movement[0] != 0:
-            if 0 < block.rect[1] + block.rect[3] / 2 - (self.rect[1] - self.rect[3] / 2) < 15:
-                self.rect.move_ip(0, 15)
-            elif 0 > block.rect[1] - block.rect[3] / 2 - (self.rect[1] + self.rect[3] / 2) > -15:
-                self.rect.move_ip(0, -15)
-        elif movement[1] != 0:
-            if 0 < block.rect[0] + block.rect[2] / 2 - (self.rect[0] - self.rect[2] / 2) < 15:
-                self.rect.move_ip(15, 0)
-            elif 0 > block.rect[0] - block.rect[2] / 2 - (self.rect[0] + self.rect[2] / 2) > 15:
-                self.rect.move_ip(15, 0)
+        pass
+        # block = block_colide_list[0]
+        # print(self.rect[0], self.rect[1], self.rect[2], self.rect[3])
+        # print(block.rect[0], block.rect[1], block.rect[2], block.rect[3])
+        # if movement[0] != 0:
+        #     if 0 < block.rect[1] + block.rect[3] / 2 - (self.rect[1] - self.rect[3] / 2) < 15:
+        #         self.rect.move_ip(0, 15)
+        #     elif 0 > block.rect[1] - block.rect[3] / 2 - (self.rect[1] + self.rect[3] / 2) > -15:
+        #         self.rect.move_ip(0, -15)
+        # elif movement[1] != 0:
+        #     if 0 < block.rect[0] + block.rect[2] / 2 - (self.rect[0] - self.rect[2] / 2) < 15:
+        #         self.rect.move_ip(15, 0)
+        #     elif 0 > block.rect[0] - block.rect[2] / 2 - (self.rect[0] + self.rect[2] / 2) > 15:
+        #         self.rect.move_ip(15, 0)
 
     def movement_correction(self, colidet_block, movement):
         pass

@@ -7,6 +7,7 @@ import component.Map
 import component.Bomb
 import component.Explosion
 import component.Button
+import component.HeartManager
 import threading
 import time
 
@@ -25,6 +26,7 @@ def game():
         player.update(keys_pressed, map.set_of_block, map.set_of_box, map.set_of_explosion)
         player2.update(keys_pressed, map.set_of_block, map.set_of_box, map.set_of_explosion)
         planting = player.planting_bomb_event(keys_pressed)
+        heart_manager.update(player.life, player2.life)
         if planting:
             bomb = component.Bomb.Bomb(bombIMG, planting[0], planting[1])
             if map.add_bomb(bomb):
@@ -41,6 +43,8 @@ def game():
         map.draw(screen)
         player.draw(screen)
         player2.draw(screen)
+        heart_manager.draw(screen)
+
         pygame.display.flip()
         clock.tick(30)
 
@@ -58,8 +62,6 @@ def main_menu(event):
         state = 1
     elif button_quit.clicked:
         state = -1
-
-
     return state
 
 
@@ -106,7 +108,8 @@ anime33 = image_controler.get_sequance_of_image_for_animation("character2_walk_l
 anime44 = image_controler.get_mirror_sequance_for_animation("character2_walk_left", character_size)
 
 anime_box = image_controler.get_sequance_of_image_for_animation("box", box_size)
-
+heart_img = image_controler.get_image("heart", (30,30))
+heart_manager = component.HeartManager.HeartManager(heart_img, (20,20), 3, SCREENSIZE)
 box_img = image_controler.get_image("box1", box_size)
 animation_handler_p1 = component.AnimationHandler.AnimationHandler([anime1, anime2, anime3, anime4])
 animation_handler_p2 = component.AnimationHandler.AnimationHandler([anime11, anime22, anime33, anime44])
