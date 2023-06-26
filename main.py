@@ -109,6 +109,10 @@ def bomb_clock(bomb, map, explosionIMG, time_to_explode=1.5):
 CHARACTER_SIZE = (50, 50)
 BOX_SIZE = (60, 60)
 SMALL_ELEMENT_SIZE = (30, 30)
+PLAYER_SPEED = 5
+BOMB_NUM = 3
+LIFE = 3
+BOMB_RANGE = 150
 pygame.init()
 SCREENSIZE = WIDTH, HEIGHT = 780, 660
 screen = pygame.display.set_mode(SCREENSIZE)
@@ -149,7 +153,10 @@ animation_handler_box = component.AnimationHandler.AnimationHandler([anime_box])
 blockIMG = image_controler.get_image("block", BOX_SIZE)
 
 pygame.mixer.music.load(os.path.join(os.getcwd(), "resources/music/background_music.wav"))
+
 pygame.mixer.music.play(-1)
+pygame.mixer.music.set_volume(0.05)
+
 window_open = True
 state = 0
 winner = None
@@ -167,9 +174,11 @@ while window_open:
         elif state == -1:
             window_open = False
         elif state == 1:
-            player = component.Player.Player(3, 3, 5, 150, player1IMG, (690, 570), animation_handler_p1,
+            player = component.Player.Player(LIFE, BOMB_NUM, PLAYER_SPEED, BOMB_RANGE, player1IMG, (690, 570),
+                                             animation_handler_p1,
                                              player1_control)
-            player2 = component.Player.Player(3, 3, 5, 150, player2IMG, (90, 90), animation_handler_p2, player2_control)
+            player2 = component.Player.Player(LIFE, BOMB_NUM, PLAYER_SPEED, BOMB_RANGE, player2IMG, (90, 90),
+                                              animation_handler_p2, player2_control)
             heart_manager = component.HeartManager.HeartManager(heart_img, (20, 20), 3, SCREENSIZE)
             map = component.Map.Map()
             map.block_initialize(blockIMG, WIDTH, HEIGHT)
