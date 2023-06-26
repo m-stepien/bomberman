@@ -49,7 +49,7 @@ class Map:
                           (90, 500), (330, 500), (570, 500),
                           (90, 560), (210, 560), (390, 560), (510, 560), (570, 560)]
         for position in positions_list:
-            self.set_of_box.add(component.Box.Box(boxIMG, position, animation_hander_box))
+            self.set_of_box.add(component.Box.Box(boxIMG, position, animation_hander_box.copy()))
 
     def draw(self, surface):
         self.set_of_block.draw(surface)
@@ -60,16 +60,14 @@ class Map:
     def add_bomb(self, bomb):
         if not pygame.sprite.spritecollide(bomb, self.set_of_bomb, False):
             self.set_of_bomb.add(bomb)
-            print("tak")
             return True
         else:
-            print("nope")
             return False
 
     def add_explosions(self, explosionIMG, range, position):
         new_position = self._calculate_position_for_explosion(position)
         a, b = new_position
-        step = 60
+        step = 30
         print(position)
         self.set_of_explosion.add(component.Explosion.Explosion(explosionIMG, new_position))
         a += step
@@ -128,10 +126,10 @@ class Map:
             b -= step
 
     def _destruction_of_box(self, box):
-        for _ in range(0, box.animation_handler.get_len_of_animation(0)):
+        for _ in range(0, box.animation_handler.get_len_of_animation(0)-1):
             print(box.animation_handler.get_len_of_animation(0))
             box.image = box.animation_handler.run(0)
-            time.sleep(5.06)
+            time.sleep(0.05)
         box.kill()
 
     def _calculate_position_for_explosion(self, position):

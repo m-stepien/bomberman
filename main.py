@@ -97,7 +97,7 @@ anime44 = image_controler.get_mirror_sequance_for_animation("character2_walk_lef
 
 anime_box = image_controler.get_sequance_of_image_for_animation("box", box_size)
 
-box_img = image_controler.get_image("box0", box_size)
+box_img = image_controler.get_image("box1", box_size)
 animation_handler_p1 = component.AnimationHandler.AnimationHandler([anime1, anime2, anime3, anime4])
 animation_handler_p2 = component.AnimationHandler.AnimationHandler([anime11, anime22, anime33, anime44])
 animation_handler_box = component.AnimationHandler.AnimationHandler([anime_box])
