@@ -12,12 +12,37 @@ import threading
 import time
 
 
+def end_menu(event, winner):
+    screen.blit(bg, (0, 0))
+    state = 2
+    font = pygame.font.Font(None, 30)
+    text_surface = font.render("The winner is {}".format(winner), True, (0, 0, 0))
+    text_rect = text_surface.get_rect()
+    text_rect.center =(WIDTH / 2, 100),
+    screen.blit(text_surface, text_rect)
+    button_back = component.Button.Button(WIDTH / 2 - 75, 300, 150, 50, "BACK")
+    button_quit = component.Button.Button(WIDTH / 2 - 75, 375, 150, 50, "END")
+    button_back.handle_event(event)
+    button_quit.handle_event(event)
+    button_back.draw(screen)
+    button_quit.draw(screen)
+    if button_back.clicked:
+        state = 0
+    elif button_quit.clicked:
+
+        state = -1
+    return state
+
+
 def game():
+    global window_open
+
     while player.life > 0 and player2.life > 0:
         screen.blit(bg, (0, 0))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 window_open = False
+                return None
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     window_open = False
@@ -47,6 +72,10 @@ def game():
 
         pygame.display.flip()
         clock.tick(30)
+    if player.life>0:
+        return "Player1"
+    else:
+        return "Player2"
 
 
 def main_menu(event):
@@ -76,8 +105,7 @@ def bomb_clock(bomb, map, explosionIMG, time_to_explode=1.5):
     bomb.kill()
 
 
-character_size = (50, 50)
-box_size = (60, 60)
+
 pygame.init()
 SCREENSIZE = WIDTH, HEIGHT = 780, 660
 screen = pygame.display.set_mode(SCREENSIZE)
@@ -110,8 +138,8 @@ anime44 = image_controler.get_mirror_sequance_for_animation("character2_walk_lef
 anime55 = image_controler.get_sequance_of_image_for_animation("character_2_get_hit", character_size)
 
 anime_box = image_controler.get_sequance_of_image_for_animation("box", box_size)
-heart_img = image_controler.get_image("heart", (30,30))
-heart_manager = component.HeartManager.HeartManager(heart_img, (20,20), 3, SCREENSIZE)
+heart_img = image_controler.get_image("heart", (30, 30))
+heart_manager = component.HeartManager.HeartManager(heart_img, (20, 20), 3, SCREENSIZE)
 box_img = image_controler.get_image("box1", box_size)
 animation_handler_p1 = component.AnimationHandler.AnimationHandler([anime1, anime2, anime3, anime4, anime5])
 animation_handler_p2 = component.AnimationHandler.AnimationHandler([anime11, anime22, anime33, anime44, anime55])
@@ -132,14 +160,15 @@ while window_open:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 window_open = False
-        else:
+        if state == 0:
             state = main_menu(event)
-        if state == 1:
-            game()
-            #do zmiany na 2
-            state = 1
         elif state == -1:
             window_open = False
+        if state == 1:
+            winner = game()
+            if winner:
+                state = end_menu(event, winner)
+
 
     pygame.display.flip()
     clock.tick(30)
